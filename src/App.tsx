@@ -1,31 +1,34 @@
 import React, { useState } from "react";
 import Select from "react-select";
+import { DropZone } from "./components/DropZone";
 
-const buildingTypes = ["home", "factory", "hospital"] as const;
+const buildingTypes = [
+  "home",
+  "factory",
+  "hospital",
+  "solarPanel",
+  "windmill",
+] as const;
 type BuildingType = (typeof buildingTypes)[number];
-
-const buildingNames: Record<BuildingType, string> = {
-  home: "Дом",
-  factory: "Завод",
-  hospital: "Больница",
-};
 
 interface Building {
   type: BuildingType;
   price: number;
 }
 
-const options = [
+const options: { value: BuildingType; label: string }[] = [
   { value: "home", label: "Дом" },
   { value: "factory", label: "Завод" },
   { value: "hospital", label: "Больница" },
+  { value: "solarPanel", label: "Солнечная панель" },
+  { value: "windmill", label: "Ветряная мельница" },
 ];
 
 export const App: React.FC = () => {
+  const [forecasts, setForecasts] = useState({} as Record<string, number[]>);
   const [buildings, setBuildings] = useState<Building[]>([]);
-
   const [type, setType] = useState<BuildingType | "">("");
-  const [price, setPrice] = useState("0");
+  const [price, setPrice] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +44,8 @@ export const App: React.FC = () => {
     setPrice(e.target.value);
   };
 
+  console.log(forecasts);
+
   return (
     <>
       <header className="border-b border-zinc-700">
@@ -50,12 +55,18 @@ export const App: React.FC = () => {
       </header>
 
       <main className="main-container pt-4">
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold mb-2">Загрузите прогнозы</h2>
+
+          <DropZone onChange={setForecasts} />
+        </div>
+
         <h2 className="text-lg font-semibold mb-2">Введите данные аукциона</h2>
 
         <div className="py-2 mb-2 flex flex-col gap-2 border-b border-zinc-700">
-          {buildings.map(({ type, price }) => (
-            <p className="text-lg">
-              {buildingNames[type]} - {price}
+          {buildings.map(({ type, price }, i) => (
+            <p key={i} className="text-lg">
+              {options.find((opt) => opt.value === type)?.label} - {price}
             </p>
           ))}
         </div>
@@ -83,6 +94,7 @@ export const App: React.FC = () => {
                 type="number"
                 value={price}
                 onChange={handlePriceChange}
+                placeholder="Цена"
               />
             </label>
           </div>
