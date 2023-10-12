@@ -84,6 +84,7 @@ export const App: React.FC = () => {
                 value={options.find((opt) => opt.value === type)}
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onChange={(v) => setType(v?.value as any)}
+                isSearchable={false}
               />
             </label>
 
