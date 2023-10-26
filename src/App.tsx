@@ -1,20 +1,9 @@
 import React, { useState } from "react";
 import Select from "react-select";
 import { DropZone } from "./components/DropZone";
-
-const buildingTypes = [
-  "home",
-  "factory",
-  "hospital",
-  "solarPanel",
-  "windmill",
-] as const;
-type BuildingType = (typeof buildingTypes)[number];
-
-interface Building {
-  type: BuildingType;
-  price: number;
-}
+import { getTopology } from "./lib/getTopology";
+import { Graph } from "./components/Graph";
+import { Building, BuildingType } from "./types";
 
 const options: { value: BuildingType; label: string }[] = [
   { value: "home", label: "Дом" },
@@ -25,10 +14,13 @@ const options: { value: BuildingType; label: string }[] = [
 ];
 
 export const App: React.FC = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [forecasts, setForecasts] = useState({} as Record<string, number[]>);
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [type, setType] = useState<BuildingType | "">("");
   const [price, setPrice] = useState("");
+
+  const [lines, setLines] = useState<string[][] | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +36,19 @@ export const App: React.FC = () => {
     setPrice(e.target.value);
   };
 
-  console.log(forecasts);
+  const handleConstructClick = () => {
+    const objectsCount = buildings.reduce((acc, cur) => {
+      if (cur.type in acc) {
+        acc[cur.type] += 1;
+      } else {
+        acc[cur.type] = 1;
+      }
+
+      return acc;
+    }, {} as Record<BuildingType, number>);
+
+    setLines(getTopology(forecasts, objectsCount));
+  };
 
   return (
     <>
@@ -54,7 +58,7 @@ export const App: React.FC = () => {
         </div>
       </header>
 
-      <main className="main-container pt-4">
+      <main className="main-container pt-4 pb-32">
         <div className="mb-4">
           <h2 className="text-lg font-semibold mb-2">Загрузите прогнозы</h2>
 
@@ -73,7 +77,7 @@ export const App: React.FC = () => {
 
         <form
           onSubmit={handleSubmit}
-          className="flex items-center gap-2 flex-wrap"
+          className="flex items-center gap-2 flex-wrap mb-2"
         >
           <div className="flex items-center gap-2">
             <label className="flex flex-col gap-1">
@@ -104,6 +108,15 @@ export const App: React.FC = () => {
             Submit
           </button>
         </form>
+
+        <button
+          onClick={handleConstructClick}
+          className="px-6 py-2 bg-blue-600 text-white rounded self-end mb-2"
+        >
+          Construct graph
+        </button>
+
+        {lines && <Graph lines={lines} />}
       </main>
     </>
   );
