@@ -11,6 +11,7 @@ export function getTopology(
   const avgForecast = Object.fromEntries(
     Object.entries(forecast).map(([key, value]) => [key, getAvg(value)])
   );
+  console.log(avgForecast);
 
   const results: string[][] = [[], [], [], []];
 
