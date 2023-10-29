@@ -4,6 +4,7 @@ import { DropZone } from "./components/DropZone";
 import { getTopology } from "./lib/getTopology";
 import { Graph } from "./components/Graph";
 import { Building, BuildingType } from "./types";
+import { EnergyBalance } from "./components/EnergyBalance";
 
 const options: { value: BuildingType; label: string }[] = [
   { value: "home", label: "Дом" },
@@ -14,8 +15,9 @@ const options: { value: BuildingType; label: string }[] = [
 ];
 
 export const App: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [forecasts, setForecasts] = useState({} as Record<string, number[]>);
+  const [forecasts, setForecasts] = useState<null | Record<string, number[]>>(
+    null
+  );
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [type, setType] = useState<BuildingType | "">("");
   const [price, setPrice] = useState("");
@@ -37,6 +39,8 @@ export const App: React.FC = () => {
   };
 
   const handleConstructClick = () => {
+    if (!forecasts) return;
+
     const objectsCount = buildings.reduce((acc, cur) => {
       if (cur.type in acc) {
         acc[cur.type] += 1;
@@ -49,6 +53,8 @@ export const App: React.FC = () => {
 
     setLines(getTopology(forecasts, objectsCount));
   };
+
+  console.log(lines);
 
   return (
     <>
@@ -65,15 +71,21 @@ export const App: React.FC = () => {
           <DropZone onChange={setForecasts} />
         </div>
 
-        <h2 className="text-lg font-semibold mb-2">Введите данные аукциона</h2>
+        {buildings.length !== 0 && (
+          <>
+            <h2 className="text-lg font-semibold mb-2">Куплено</h2>
 
-        <div className="py-2 mb-2 flex flex-col gap-2 border-b border-zinc-700">
-          {buildings.map(({ type, price }, i) => (
-            <p key={i} className="text-lg">
-              {options.find((opt) => opt.value === type)?.label} - {price}
-            </p>
-          ))}
-        </div>
+            <div className="mb-2 pb-2 flex flex-col gap-2 border-b border-zinc-700">
+              {buildings.map(({ type, price }, i) => (
+                <p key={i} className="text-lg">
+                  {options.find((opt) => opt.value === type)?.label} - {price}
+                </p>
+              ))}
+            </div>
+          </>
+        )}
+
+        <h2 className="text-lg font-semibold mb-2">Введите данные аукциона</h2>
 
         <form
           onSubmit={handleSubmit}
@@ -85,7 +97,7 @@ export const App: React.FC = () => {
               <Select
                 classNamePrefix="select"
                 options={options}
-                value={options.find((opt) => opt.value === type)}
+                value={options.find((opt) => opt.value === type) ?? null}
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onChange={(v) => setType(v?.value as any)}
                 isSearchable={false}
@@ -108,6 +120,15 @@ export const App: React.FC = () => {
             Submit
           </button>
         </form>
+
+        {forecasts && (
+          <>
+            <h3 className="text-base font-semibold mb-2">
+              Баланс энергопотребления
+            </h3>
+            <EnergyBalance forecasts={forecasts} buildings={buildings} />
+          </>
+        )}
 
         <button
           onClick={handleConstructClick}
