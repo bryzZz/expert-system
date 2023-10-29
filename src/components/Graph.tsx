@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Graph as DGraph, Layout, Renderer } from "graphdracula";
+import { Network } from "vis-network/standalone";
 
 interface GraphProps {
   lines: string[][];
@@ -7,44 +7,49 @@ interface GraphProps {
 
 export const Graph: React.FC<GraphProps> = ({ lines }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const flagRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    if (flagRef.current) {
-      document.querySelector(".Graph > *")?.remove();
-    }
+    const nodes = lines
+      .flat()
+      .map((label) => ({
+        id: label,
+        label,
+      }))
+      .concat([
+        { id: "station", label: "station" },
+        { id: "sub station", label: "sub station" },
+        { id: "1", label: "1" },
+        { id: "2", label: "2" },
+        { id: "3", label: "3" },
+        { id: "4", label: "4" },
+        { id: "5", label: "5" },
+      ]);
 
-    const width = containerRef.current.clientWidth;
+    const edges = [
+      { from: "station", to: "1" },
+      { from: "station", to: "2" },
+      { from: "station", to: "5" },
+      { from: "5", to: "sub station" },
+      { from: "sub station", to: "3" },
+      { from: "sub station", to: "4" },
+    ];
 
-    const graph = new DGraph();
+    lines.forEach((line, i) => {
+      line.forEach((obj) => {
+        edges.push({ from: i.toString(), to: obj });
+      });
+    });
 
-    for (let i = 0; i < lines.length; i++) {
-      for (const object of lines[i]) {
-        graph.addEdge((i + 1).toString(), object);
-      }
-    }
-
-    graph.addEdge("sub station", "3");
-    graph.addEdge("sub station", "4");
-
-    graph.addEdge("station", "1");
-    graph.addEdge("station", "2");
-
-    graph.addEdge("station", "5");
-    graph.addEdge("5", "sub station");
-
-    const layout = new Layout.Spring(graph);
-    const renderer = new Renderer.Raphael(".Graph", graph, width, 600);
-
-    layout.layout();
-    renderer.draw();
-
-    flagRef.current = true;
+    new Network(
+      containerRef.current,
+      { nodes, edges },
+      { autoResize: true, height: "500px" }
+    );
   }, [lines]);
 
   return (
-    <div ref={containerRef} className="Graph border border-zinc-600"></div>
+    <div ref={containerRef} className="border rounded border-zinc-600"></div>
   );
 };
