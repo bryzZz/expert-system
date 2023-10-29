@@ -62,7 +62,7 @@ export const EnergyBalance: React.FC<EnergyBalanceProps> = ({
     <div className="mb-2 max-w-xs">
       <div className="h-2 bg-gradient-to-r relative from-red-600 via-yellow-400 to-green-600">
         <div
-          className="absolute bg-white border border-zinc-600 rounded-sm w-2 h-5 top-1/2 left-0 -translate-y-1/2 -translate-x-1/2"
+          className="absolute bg-white border border-zinc-600 rounded-sm w-2 h-5 top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 transition-all duration-500"
           style={{
             left: `${balance}%`,
           }}
