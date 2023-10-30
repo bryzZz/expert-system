@@ -35,7 +35,11 @@ export const App: React.FC = () => {
   };
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPrice(e.target.value);
+    const value = e.target.value;
+
+    if (value.includes(".") && value.split(".")[1].length > 2) return;
+
+    setPrice(value);
   };
 
   const handleConstructClick = () => {
@@ -53,8 +57,6 @@ export const App: React.FC = () => {
 
     setLines(getTopology(forecasts, objectsCount));
   };
-
-  console.log(lines);
 
   return (
     <>
@@ -112,6 +114,7 @@ export const App: React.FC = () => {
                 value={price}
                 onChange={handlePriceChange}
                 placeholder="Цена"
+                step={0.01}
               />
             </label>
           </div>
@@ -124,7 +127,7 @@ export const App: React.FC = () => {
         {forecasts && (
           <>
             <h3 className="text-base font-semibold mb-2">
-              Баланс энергопотребления
+              Баланс энергопотребления (МВт за такт в среднем)
             </h3>
             <EnergyBalance forecasts={forecasts} buildings={buildings} />
           </>
