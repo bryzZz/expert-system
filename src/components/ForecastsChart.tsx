@@ -35,6 +35,8 @@ export const ForecastsChart: React.FC<ForecastsChartProps> = ({ data }) => {
       datasets: Object.entries(data).map(([label, data]) => ({
         label,
         data,
+        pointRadius: 0,
+        tension: 0.1,
       })),
     };
   }, [data]);
