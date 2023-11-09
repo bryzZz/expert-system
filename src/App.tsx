@@ -5,6 +5,7 @@ import { getTopology } from "./lib/getTopology";
 import { Graph } from "./components/Graph";
 import { Building, BuildingType } from "./types";
 import { EnergyBalance } from "./components/EnergyBalance";
+import { ForecastsChart } from "./components/ForecastsChart";
 
 const options: { value: BuildingType; label: string }[] = [
   { value: "home", label: "Дом" },
@@ -70,7 +71,11 @@ export const App: React.FC = () => {
         <div className="mb-4">
           <h2 className="text-lg font-semibold mb-2">Загрузите прогнозы</h2>
 
-          <DropZone onChange={setForecasts} />
+          <div className="flex gap-4 flex-col md:flex-row">
+            <DropZone onChange={setForecasts} />
+
+            {forecasts && <ForecastsChart data={forecasts} />}
+          </div>
         </div>
 
         {buildings.length !== 0 && (
