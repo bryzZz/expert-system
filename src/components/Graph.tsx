@@ -52,18 +52,25 @@ export const Graph: React.FC<GraphProps> = ({ lines }) => {
         return res;
       })
       .concat([
-        { id: "station", label: "station", shape: "image", image: Station },
+        {
+          id: "station",
+          label: "station",
+          shape: "image",
+          image: Station,
+          color: "black",
+        },
         {
           id: "sub station",
           label: "sub station",
           shape: "image",
           image: SubStation,
+          color: "black",
         },
-        { id: "1", label: "1", color: "yellow", font: { color: "black" } },
-        { id: "2", label: "2", color: "yellow", font: { color: "black" } },
-        { id: "3", label: "3", color: "yellow", font: { color: "black" } },
-        { id: "4", label: "4", color: "yellow", font: { color: "black" } },
-        { id: "5", label: "5", color: "yellow", font: { color: "black" } },
+        { id: "1", label: "1", color: "black", font: { color: "white" } },
+        { id: "2", label: "2", color: "black", font: { color: "white" } },
+        { id: "3", label: "3", color: "black", font: { color: "white" } },
+        { id: "4", label: "4", color: "black", font: { color: "white" } },
+        { id: "5", label: "5", color: "black", font: { color: "white" } },
       ]);
 
     const edges = [
@@ -88,16 +95,13 @@ export const Graph: React.FC<GraphProps> = ({ lines }) => {
         autoResize: true,
         height: "500px",
         nodes: {
-          font: { size: 20, color: "white" },
+          font: { size: 20, color: "black" },
         },
       }
     );
   }, [lines]);
 
   return (
-    <div
-      ref={containerRef}
-      className="border bg-green-700 rounded border-zinc-600"
-    ></div>
+    <div ref={containerRef} className="border rounded border-zinc-600"></div>
   );
 };

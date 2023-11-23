@@ -41,7 +41,7 @@ export function getTopology(
   }
 
   // Распределение заводов
-  const allFactories = new Array(objectsCount["factory"] ?? 0)
+  const allFactories = new Array((objectsCount["factory"] ?? 0) * 2)
     .fill(0)
     .map((_, i) => `factory${Math.floor(i / 2)}`);
   for (let i = 0; i < allFactories.length; i++) {
