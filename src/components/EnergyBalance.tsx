@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
-import { Building, BuildingType } from "../types";
-import { clamp } from "../utils";
+import { Building } from "../types";
 import { getEnergyBalance } from "../lib/getEnergyBalance";
 
 const getAvg = (arr: number[]) => {
