@@ -16,6 +16,7 @@ interface GraphProps {
 
 export const Graph: React.FC<GraphProps> = ({ lines }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  console.log(lines);
 
   useEffect(() => {
     if (!containerRef.current) return;
