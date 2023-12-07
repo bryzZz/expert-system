@@ -24,7 +24,7 @@ export const EnergyBalance: React.FC<EnergyBalanceProps> = ({
   );
 
   const [energyProduction, energyConsumption, balance] = useMemo(
-    () => getEnergyBalance(avgForecast, buildings),
+    () => getEnergyBalance(structuredClone(avgForecast), buildings),
     [avgForecast, buildings]
   );
 
