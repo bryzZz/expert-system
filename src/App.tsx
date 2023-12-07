@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { DropZone } from "./components/DropZone";
-import { getTopology } from "./lib/getTopology";
+import { getTopology as getTopology2 } from "./lib/getTopology copy";
 import { Graph } from "./components/Graph";
 import { Building, BuildingType } from "./types";
 import { EnergyBalance } from "./components/EnergyBalance";
@@ -33,8 +33,13 @@ export const App: React.FC = () => {
 
       return acc;
     }, {} as Record<BuildingType, number>);
+    console.log(forecasts);
 
-    setLines(getTopology(forecasts, objectsCount));
+    // console.log(getTopology(forecasts, objectsCount));
+    // console.log(getTopology2(forecasts, objectsCount));
+    // startTransition(() => {
+    setLines(getTopology2(forecasts, objectsCount));
+    // });
   };
 
   return (
