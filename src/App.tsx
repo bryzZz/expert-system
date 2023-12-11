@@ -6,6 +6,7 @@ import { Graph } from "./components/Graph";
 import { Building, BuildingType } from "./types";
 import { EnergyBalance } from "./components/EnergyBalance";
 import { ForecastsChart } from "./components/ForecastsChart";
+import { useWorker, WORKER_STATUS } from "@koale/useworker";
 import { BuildingForm } from "./components/BuildingForm";
 import { options } from "./constants";
 
@@ -14,14 +15,14 @@ export const App: React.FC = () => {
     null
   );
   const [buildings, setBuildings] = useState<Building[]>([]);
-
   const [lines, setLines] = useState<string[][] | null>(null);
+  const [sortWorker, { status: workerStatus }] = useWorker(getTopology2);
 
   const handleSubmit = (type: BuildingType, price: string) => {
     setBuildings((p) => [...p, { type, price: Number(price) }]);
   };
 
-  const handleConstructClick = () => {
+  const handleConstructClick = async () => {
     if (!forecasts) return;
 
     const objectsCount = buildings.reduce((acc, cur) => {
@@ -33,14 +34,13 @@ export const App: React.FC = () => {
 
       return acc;
     }, {} as Record<BuildingType, number>);
-    console.log(forecasts);
 
-    // console.log(getTopology(forecasts, objectsCount));
-    // console.log(getTopology2(forecasts, objectsCount));
-    // startTransition(() => {
-    setLines(getTopology2(forecasts, objectsCount));
-    // });
+    const topology = await sortWorker(forecasts, objectsCount);
+
+    setLines(topology);
   };
+
+  console.log(workerStatus);
 
   return (
     <>
@@ -87,6 +87,8 @@ export const App: React.FC = () => {
         >
           Construct graph
         </button>
+
+        {workerStatus === WORKER_STATUS.RUNNING && <span>Loading...</span>}
 
         {lines && <Graph lines={lines} />}
       </main>
