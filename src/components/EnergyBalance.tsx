@@ -8,10 +8,10 @@ const getHelperText = (energyConsumption: number, energyProduction: number) => {
   if (delta < -7)
     return "У вас сильно не хватает электричества. Рекоммендуем купить электростанцию.";
 
-  if (delta >= -6 && delta < -3)
+  if (delta >= -7 && delta < -3)
     return "У вас не хватает электроэнергии. Рекоммендуем купить электростанцию или внимательно докупать электричество.";
 
-  if (delta >= -2 && delta < -0.5)
+  if (delta >= -3 && delta < -0.5)
     return "У вас немного не хватает электричества. Рекоммендуем докупать его самостоятельно.";
 
   if (delta >= -0.5 && delta <= 0.5)
