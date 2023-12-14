@@ -44,13 +44,13 @@ export const EnergyChart: React.FC<ForecastsChartProps> = ({ buildings, forecast
      
     let energyProduction: number[] = []; 
     for(let i = 0; i < forecasts['Солнце'].length; i++){ 
-        const s = (forecasts['Солнце'][i] > 10 ? 15 : 15 * (forecasts['Солнце'][i] / 10)) * objectsCount['solarPanel']; 
-        const w = (forecasts['Ветер'][i] > 9 ? 15 : 15 * (forecasts['Ветер'][i] / 9)) * objectsCount['windmill']; 
+        const s = (forecasts['Солнце'][i] > 10 ? 15 : 15 * (forecasts['Солнце'][i] / 10)) * (objectsCount['solarPanel'] ?? 0); 
+        const w = (forecasts['Ветер'][i] > 9 ? 15 : 15 * (forecasts['Ветер'][i] / 9)) * (objectsCount['windmill'] ?? 0); 
         energyProduction.push(s + w); 
     } 
     let energyConsumption: number[] = []; 
     for(let i = 0; i < forecasts['Дома'].length; i++){ 
-        energyConsumption.push(forecasts['Дома'][i] * objectsCount['home'] + forecasts['Заводы'][i] * objectsCount['factory'] + forecasts['Больницы'][i] * objectsCount['hospital']); 
+        energyConsumption.push(forecasts['Дома'][i] * (objectsCount['home'] ?? 0) + forecasts['Заводы'][i] * (objectsCount['factory'] ?? 0) + forecasts['Больницы'][i] * (objectsCount['hospital'] ?? 0)); 
     } 
  
     console.log(energyProduction, energyConsumption); 
@@ -69,7 +69,7 @@ export const EnergyChart: React.FC<ForecastsChartProps> = ({ buildings, forecast
         tension: 0.1, 
       }] 
     }; 
-  }, [forecasts]); 
+  }, [forecasts, buildings]); 
  
   useEffect(() => { 
     if (!chartRef.current || !containerRef.current) return; 
