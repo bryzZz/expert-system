@@ -52,6 +52,8 @@ export const EnergyChart: React.FC<ForecastsChartProps> = ({ buildings, forecast
     for(let i = 0; i < forecasts['Дома'].length; i++){ 
         energyConsumption.push(forecasts['Дома'][i] * objectsCount['home'] + forecasts['Заводы'][i] * objectsCount['factory'] + forecasts['Больницы'][i] * objectsCount['hospital']); 
     } 
+ 
+    console.log(energyProduction, energyConsumption); 
        
     return { 
       labels: new Array(forecasts['Солнце'].length).fill(0).map((_, i) => i.toString()), 
