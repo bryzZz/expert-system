@@ -41,34 +41,31 @@ export const EnergyChart: React.FC<ForecastsChartProps> = ({ buildings, forecast
    
         return acc; 
       }, {} as Record<BuildingType, number>); 
+     
+    let energyProduction: number[] = []; 
+    for(let i = 0; i < forecasts['Солнце'].length; i++){ 
+        const s = (forecasts['Солнце'][i] > 10 ? 15 : 15 * (forecasts['Солнце'][i] / 10)) * objectsCount['solarPanel']; 
+        const w = (forecasts['Ветер'][i] > 9 ? 15 : 15 * (forecasts['Ветер'][i] / 9)) * objectsCount['windmill']; 
+        energyProduction.push(s + w); 
+    } 
+    let energyConsumption: number[] = []; 
+    for(let i = 0; i < forecasts['Дома'].length; i++){ 
+        energyConsumption.push(forecasts['Дома'][i] * objectsCount['home'] + forecasts['Заводы'][i] * objectsCount['factory'] + forecasts['Больницы'][i] * objectsCount['hospital']); 
+    } 
        
     return { 
       labels: new Array(forecasts['Солнце'].length).fill(0).map((_, i) => i.toString()), 
-      datasets: Object.entries(forecasts).map(([label, data]) => { 
-        let _data = []; 
-        if(label === 'Дома'){ 
-            _data = data.map((value) => value * objectsCount['home']) 
-        } 
-        if(label === 'Заводы'){ 
-            _data = data.map((value) => value * objectsCount['factory']) 
-        } 
-        if(label === 'Больницы'){ 
-            _data = data.map((value) => value * objectsCount['hospital']) 
-        } 
-        if(label === 'Солнце'){ 
-            _data = data.map((value) => (value > 10 ? 15 : 15 * (value / 10)) * objectsCount['solarPanel']) 
-        } 
-        if(label === 'Ветер'){ 
-            _data = data.map((value) => (value > 9 ? 15 : 15 * (value / 9)) * objectsCount['windmill']) 
-        } 
- 
-        return { 
-            label, 
-            data: _data, 
-            pointRadius: 0, 
-            tension: 0.1, 
-          } 
-      }), 
+      datasets: [{ 
+        label: 'Производство', 
+        data: energyProduction, 
+        pointRadius: 0, 
+        tension: 0.1, 
+      }, { 
+        label: 'Потребление', 
+        data: energyConsumption, 
+        pointRadius: 0, 
+        tension: 0.1, 
+      }] 
     }; 
   }, [forecasts]); 
  
